@@ -1,0 +1,19 @@
+services:
+  db:
+    image: mariadb:11.8.5
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+  app:
+    image: mcr.microsoft.com/devcontainers/typescript-node:24-bookworm
+    env_file:
+      - .env
+    volumes:
+      - .:/workspaces/Stock-App:cached
+    ports:
+      - "5173:5173"
+    command: 'sleep infinity'
+volumes:
+  db_data:
