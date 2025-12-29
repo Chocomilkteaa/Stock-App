@@ -10,11 +10,15 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@repo/logger": "workspace:*",
+    "axios": "^1.13.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
-    "mysql2": "^3.16.0"
+    "express-async-handler": "^1.2.0",
+    "mysql2": "^3.16.0",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@repo/config": "workspace:*",
