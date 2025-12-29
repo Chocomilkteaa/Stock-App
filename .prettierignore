@@ -1,0 +1,8 @@
+.devcontainer
+.agent
+node_modules
+.pnpm-store
+dist
+.turbo
+.next
+pnpm-lock.yaml
