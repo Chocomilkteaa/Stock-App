@@ -67,10 +67,7 @@
       "indexes": {
         "daily_prices_idx": {
           "name": "daily_prices_idx",
-          "columns": [
-            "stock_code",
-            "date"
-          ],
+          "columns": ["stock_code", "date"],
           "isUnique": true
         }
       },
@@ -79,12 +76,8 @@
           "name": "daily_prices_stock_code_stocks_code_fk",
           "tableFrom": "daily_prices",
           "tableTo": "stocks",
-          "columnsFrom": [
-            "stock_code"
-          ],
-          "columnsTo": [
-            "code"
-          ],
+          "columnsFrom": ["stock_code"],
+          "columnsTo": ["code"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -92,9 +85,7 @@
       "compositePrimaryKeys": {
         "daily_prices_id": {
           "name": "daily_prices_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -130,17 +121,13 @@
       "compositePrimaryKeys": {
         "stocks_id": {
           "name": "stocks_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "stocks_code_unique": {
           "name": "stocks_code_unique",
-          "columns": [
-            "code"
-          ]
+          "columns": ["code"]
         }
       },
       "checkConstraint": {}

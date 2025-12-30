@@ -204,31 +204,28 @@ export class DailyPriceService {
       return existingData;
     }
 
+    // 2. Crawl
     log(`[DailyPriceService] Check DB: No data. Starting crawl job for ${year}-${month}-${day}`);
-
     const dataDate = { year, month, day };
-    let fetchedData: DailyPriceData[] = [];
 
-    try {
-      const [twseData, tpexData] = await Promise.all([
-        this.fetchTwse(dataDate),
-        this.fetchTpex(dataDate),
-      ]);
+    const [twseData, tpexData] = await Promise.all([
+      this.fetchTwse(dataDate),
+      this.fetchTpex(dataDate),
+    ]);
 
-      log(
-        `[DailyPriceService] Crawl Summary: ${twseData.length} TWSE items, ${tpexData.length} TPEX items.`
-      );
-      fetchedData = [...twseData, ...tpexData];
-    } catch (error) {
-      log(`[DailyPriceService] Job Failed: ${(error as Error).message}`);
-      throw error;
+    log(
+      `[DailyPriceService] Crawl Summary: ${twseData.length} TWSE items, ${tpexData.length} TPEX items.`
+    );
+    const allData = [...twseData, ...tpexData];
+
+    if (allData.length === 0) {
+      log(`[DailyPriceService] No data found from sources.`);
+      return [];
     }
 
-    // 2. Store to Database
-    if (fetchedData.length > 0) {
-      await DailyPriceModel.saveStocksAndPrices(fetchedData, dateStr);
-    }
+    // 3. Save to DB
+    await DailyPriceModel.saveStocksAndPrices(allData, dateStr);
 
-    return fetchedData;
+    return allData;
   }
 }
