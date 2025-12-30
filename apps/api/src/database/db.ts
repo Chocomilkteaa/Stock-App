@@ -3,9 +3,10 @@ import mysql from 'mysql2/promise';
 import 'dotenv/config';
 
 const poolConnection = mysql.createPool({
-  host: process.env.DB_HOST,
+  host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER,
-  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME || 'stock_db',
 });
 
 export const db = drizzle(poolConnection);

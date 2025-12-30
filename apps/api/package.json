@@ -7,7 +7,9 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "db:generate": "NODE_OPTIONS='--import tsx' drizzle-kit generate",
+    "db:migrate": "NODE_OPTIONS='--import tsx' drizzle-kit migrate"
   },
   "dependencies": {
     "@repo/logger": "workspace:*",

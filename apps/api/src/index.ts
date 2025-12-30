@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import { db } from './db.js';
-import { getDailyClosingPriceController } from './controllers/Crawler.js';
+import { db } from './database/db.js';
+import { getDailyPriceController } from './controllers/DailyPrice.controller.js';
 
 const app = express();
 const port = 8080;
@@ -14,7 +14,7 @@ app.get('/health', (req, res) => {
   res.json({ message: 'API is running' });
 });
 
-app.get('/crawler/daily-prices/:date', getDailyClosingPriceController);
+app.get('/crawler/daily-prices/:date', getDailyPriceController);
 
 app.listen(port, () => {
   console.log(`API running at http://localhost:${port}`);

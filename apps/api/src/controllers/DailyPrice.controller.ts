@@ -1,14 +1,14 @@
 import { Request, Response, RequestHandler } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import { z } from 'zod';
-import { CrawlerService } from '../services/Crawler.js';
+import { DailyPriceService } from '../services/DailyPrice.service.js';
 
 // Define the schema for route parameters
 const CrawlerParamsSchema = z.object({
   date: z.iso.date(),
 });
 
-export const getDailyClosingPriceController: RequestHandler = expressAsyncHandler(
+export const getDailyPriceController: RequestHandler = expressAsyncHandler(
   async (req: Request, res: Response) => {
     // Validate req.params against the schema
     const result = CrawlerParamsSchema.safeParse(req.params);
@@ -25,7 +25,7 @@ export const getDailyClosingPriceController: RequestHandler = expressAsyncHandle
     const { date } = result.data;
 
     try {
-      const data = await CrawlerService.fetchDailyQuotes(date);
+      const data = await DailyPriceService.fetchDailyPrices(date);
 
       res.json({
         success: true,
