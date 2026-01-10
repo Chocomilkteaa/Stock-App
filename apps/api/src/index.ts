@@ -7,6 +7,7 @@ import { getDailyPriceController } from "./controllers/DailyPrice.controller.js"
 import { getMonthlyRevenueController } from "./controllers/MonthlyRevenue.controller.js";
 import { getQuarterlyEpsController } from "./controllers/QuarterlyEPS.controller.js";
 import { getQuarterlyCapitalController } from "./controllers/QuarterlyCapital.controller.js";
+import { getQuarterlyCashFlowController } from "./controllers/QuarterlyCashFlow.controller.js";
 import { log } from "@repo/logger";
 
 const app = express();
@@ -33,6 +34,7 @@ app.get("/crawler/daily-prices/:date", getDailyPriceController);
 app.get("/crawler/monthly-revenues/:date", getMonthlyRevenueController);
 app.get("/crawler/quarterly-eps/:date", getQuarterlyEpsController);
 app.get("/crawler/quarterly-capital/:date", getQuarterlyCapitalController);
+app.get("/crawler/quarterly-cash-flow/:date", getQuarterlyCashFlowController);
 
 app.listen(port, () => {
   log(`API running at http://localhost:${port}`);

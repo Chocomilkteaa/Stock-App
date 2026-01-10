@@ -133,3 +133,58 @@ export const quarterlyCapital = mysqlTable(
     uniqueIndex("quarterly_capital_idx").on(table.stockCode, table.date),
   ]
 );
+
+// 6. Quarterly Cash Flow Statement Table (現金流量表)
+// Stores quarterly cash flow statement data for each company
+export const quarterlyCashFlow = mysqlTable(
+  "quarterly_cash_flow",
+  {
+    id: bigint("id", { mode: "number" }).autoincrement().primaryKey(),
+    stockCode: varchar("stock_code", { length: 20 })
+      .notNull()
+      .references(() => stocks.code, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    // Stored as YYYY-MM-01 format (first day of the quarter's first month)
+    date: date("date", { mode: "string" }).notNull(),
+    // 營業活動之現金流量 (Cash Flow from Operating Activities)
+    operatingCashFlow: decimal("operating_cash_flow", {
+      precision: 20,
+      scale: 0,
+    }).notNull(),
+    // 投資活動之現金流量 (Cash Flow from Investing Activities)
+    investingCashFlow: decimal("investing_cash_flow", {
+      precision: 20,
+      scale: 0,
+    }).notNull(),
+    // 籌資活動之現金流量 (Cash Flow from Financing Activities)
+    financingCashFlow: decimal("financing_cash_flow", {
+      precision: 20,
+      scale: 0,
+    }).notNull(),
+    // 匯率變動對現金及約當現金之影響 (Exchange Rate Effect on Cash)
+    exchangeRateEffect: decimal("exchange_rate_effect", {
+      precision: 20,
+      scale: 0,
+    }).notNull(),
+    // 本期現金及約當現金增減數 (Net Change in Cash)
+    netCashChange: decimal("net_cash_change", {
+      precision: 20,
+      scale: 0,
+    }).notNull(),
+    // 期初現金及約當現金餘額 (Beginning Cash Balance)
+    beginningCashBalance: decimal("beginning_cash_balance", {
+      precision: 20,
+      scale: 0,
+    }).notNull(),
+    // 期末現金及約當現金餘額 (Ending Cash Balance)
+    endingCashBalance: decimal("ending_cash_balance", {
+      precision: 20,
+      scale: 0,
+    }).notNull(),
+  },
+  (table) => [
+    uniqueIndex("quarterly_cash_flow_idx").on(table.stockCode, table.date),
+  ]
+);
