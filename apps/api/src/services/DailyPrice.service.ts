@@ -1,21 +1,14 @@
 import axios from "axios";
 import { log } from "@repo/logger";
+import { type DailyPriceData } from "@repo/dto";
 import {
   getDailyPricesByDate,
   saveStocksAndPrices,
 } from "../models/DailyPrice.model.js";
 import { DataNotFoundException } from "../exceptions/DataNotFoundException.js";
 
-// Standardized interface for stock daily price data used throughout the app
-export interface DailyPriceData {
-  code: string;
-  name: string;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-}
+// Re-export the type for use by the model layer
+export type { DailyPriceData } from "@repo/dto";
 
 interface DataDate {
   year: string;

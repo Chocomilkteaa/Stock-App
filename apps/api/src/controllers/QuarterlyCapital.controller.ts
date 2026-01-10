@@ -11,7 +11,7 @@ const QuarterlyCapitalParamsSchema = z.object({
     .string()
     .regex(
       /^\d{4}-Q[1-4]$/,
-      "Invalid date format. Expected YYYY-QN (e.g., 2024-Q1)"
+      "Invalid date format. Expected YYYY-QN (e.g., 2024-Q1)",
     ),
 });
 

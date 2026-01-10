@@ -21,7 +21,7 @@ const TARGET_COLUMNS = ["公司代號", "公司名稱", "基本每股盈餘（�
 async function fetchFromSource(
   year: number,
   season: number,
-  type: "sii" | "otc"
+  type: "sii" | "otc",
 ): Promise<QuarterlyEpsData[]> {
   // Build form data for POST request
   const data = new URLSearchParams({
@@ -50,12 +50,12 @@ async function fetchFromSource(
     }
 
     log(
-      `[QuarterlyEpsService] Successfully fetched ${type.toUpperCase()} data`
+      `[QuarterlyEpsService] Successfully fetched ${type.toUpperCase()} data`,
     );
     return parseData(response.data);
   } catch (error) {
     log(
-      `[QuarterlyEpsService] Fetch ${type} error: ${(error as Error).message}`
+      `[QuarterlyEpsService] Fetch ${type} error: ${(error as Error).message}`,
     );
     return [];
   }
@@ -75,7 +75,7 @@ function parseData(html: string): QuarterlyEpsData[] {
     // Get column indices by matching header text
     const headers = $(table).find("tr.tblHead th");
     const columnIndices = TARGET_COLUMNS.map((name) =>
-      headers.toArray().findIndex((header) => $(header).text().trim() === name)
+      headers.toArray().findIndex((header) => $(header).text().trim() === name),
     );
 
     // Verify all required columns were found
@@ -112,7 +112,7 @@ function parseData(html: string): QuarterlyEpsData[] {
  * @returns Array of QuarterlyEpsData
  */
 export async function fetchQuarterlyEps(
-  dateStr: string
+  dateStr: string,
 ): Promise<QuarterlyEpsData[]> {
   // Parse YYYY-QN format (e.g., "2024-Q1")
   const match = dateStr.match(/^(\d{4})-Q([1-4])$/);
@@ -131,14 +131,14 @@ export async function fetchQuarterlyEps(
   const existingData = await getQuarterlyEpsByDate(quarterDate);
   if (existingData.length > 0) {
     log(
-      `[QuarterlyEpsService] Check DB: Found ${existingData.length} records.`
+      `[QuarterlyEpsService] Check DB: Found ${existingData.length} records.`,
     );
     return existingData;
   }
 
   // 2. Crawl from MOPS
   log(
-    `[QuarterlyEpsService] Check DB: No data. Starting crawl job for ${quarterDate}`
+    `[QuarterlyEpsService] Check DB: No data. Starting crawl job for ${quarterDate}`,
   );
 
   // Fetch data from both market types concurrently
@@ -148,7 +148,7 @@ export async function fetchQuarterlyEps(
   ]);
 
   log(
-    `[QuarterlyEpsService] Crawl Summary: ${siiData.length} SII items, ${otcData.length} OTC items.`
+    `[QuarterlyEpsService] Crawl Summary: ${siiData.length} SII items, ${otcData.length} OTC items.`,
   );
 
   const allData = [...siiData, ...otcData];
@@ -157,7 +157,7 @@ export async function fetchQuarterlyEps(
   if (allData.length === 0) {
     log(`[QuarterlyEpsService] No data found from sources.`);
     throw new DataNotFoundException(
-      `No quarterly EPS data found for ${quarterDate}. The data may not be available yet or the quarter is invalid.`
+      `No quarterly EPS data found for ${quarterDate}. The data may not be available yet or the quarter is invalid.`,
     );
   }
 

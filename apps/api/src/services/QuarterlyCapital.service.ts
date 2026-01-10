@@ -22,7 +22,7 @@ const TARGET_COLUMNS = ["公司代號", "公司名稱", "股本"];
 async function fetchFromSource(
   year: number,
   season: number,
-  type: "sii" | "otc"
+  type: "sii" | "otc",
 ): Promise<QuarterlyCapitalData[]> {
   // Build form data for POST request
   const data = new URLSearchParams({
@@ -51,12 +51,12 @@ async function fetchFromSource(
     }
 
     log(
-      `[QuarterlyCapitalService] Successfully fetched ${type.toUpperCase()} data`
+      `[QuarterlyCapitalService] Successfully fetched ${type.toUpperCase()} data`,
     );
     return parseData(response.data);
   } catch (error) {
     log(
-      `[QuarterlyCapitalService] Fetch ${type} error: ${(error as Error).message}`
+      `[QuarterlyCapitalService] Fetch ${type} error: ${(error as Error).message}`,
     );
     return [];
   }
@@ -76,7 +76,7 @@ function parseData(html: string): QuarterlyCapitalData[] {
     // Get column indices by matching header text
     const headers = $(table).find("tr.tblHead th");
     const columnIndices = TARGET_COLUMNS.map((name) =>
-      headers.toArray().findIndex((header) => $(header).text().trim() === name)
+      headers.toArray().findIndex((header) => $(header).text().trim() === name),
     );
 
     // Verify all required columns were found
@@ -113,7 +113,7 @@ function parseData(html: string): QuarterlyCapitalData[] {
  * @returns Array of QuarterlyCapitalData
  */
 export async function fetchQuarterlyCapital(
-  dateStr: string
+  dateStr: string,
 ): Promise<QuarterlyCapitalData[]> {
   // Parse YYYY-QN format (e.g., "2024-Q1")
   const match = dateStr.match(/^(\d{4})-Q([1-4])$/);
@@ -132,14 +132,14 @@ export async function fetchQuarterlyCapital(
   const existingData = await getQuarterlyCapitalByDate(quarterDate);
   if (existingData.length > 0) {
     log(
-      `[QuarterlyCapitalService] Check DB: Found ${existingData.length} records.`
+      `[QuarterlyCapitalService] Check DB: Found ${existingData.length} records.`,
     );
     return existingData;
   }
 
   // 2. Crawl from MOPS
   log(
-    `[QuarterlyCapitalService] Check DB: No data. Starting crawl job for ${quarterDate}`
+    `[QuarterlyCapitalService] Check DB: No data. Starting crawl job for ${quarterDate}`,
   );
 
   // Fetch data from both market types concurrently
@@ -149,7 +149,7 @@ export async function fetchQuarterlyCapital(
   ]);
 
   log(
-    `[QuarterlyCapitalService] Crawl Summary: ${siiData.length} SII items, ${otcData.length} OTC items.`
+    `[QuarterlyCapitalService] Crawl Summary: ${siiData.length} SII items, ${otcData.length} OTC items.`,
   );
 
   const allData = [...siiData, ...otcData];
@@ -158,7 +158,7 @@ export async function fetchQuarterlyCapital(
   if (allData.length === 0) {
     log(`[QuarterlyCapitalService] No data found from sources.`);
     throw new DataNotFoundException(
-      `No quarterly capital data found for ${quarterDate}. The data may not be available yet or the quarter is invalid.`
+      `No quarterly capital data found for ${quarterDate}. The data may not be available yet or the quarter is invalid.`,
     );
   }
 

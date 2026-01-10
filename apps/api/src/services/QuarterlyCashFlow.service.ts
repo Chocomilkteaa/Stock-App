@@ -33,7 +33,7 @@ const TARGET_COLUMNS = [
 async function fetchFromSource(
   year: number,
   season: number,
-  type: "sii" | "otc"
+  type: "sii" | "otc",
 ): Promise<QuarterlyCashFlowData[]> {
   // Build form data for POST request
   const data = new URLSearchParams({
@@ -62,12 +62,12 @@ async function fetchFromSource(
     }
 
     log(
-      `[QuarterlyCashFlowService] Successfully fetched ${type.toUpperCase()} data`
+      `[QuarterlyCashFlowService] Successfully fetched ${type.toUpperCase()} data`,
     );
     return parseData(response.data);
   } catch (error) {
     log(
-      `[QuarterlyCashFlowService] Fetch ${type} error: ${(error as Error).message}`
+      `[QuarterlyCashFlowService] Fetch ${type} error: ${(error as Error).message}`,
     );
     return [];
   }
@@ -114,7 +114,7 @@ function parseData(html: string): QuarterlyCashFlowData[] {
     // Get column indices by matching header text
     const headers = $(table).find("tr.tblHead th");
     const columnIndices = TARGET_COLUMNS.map((name) =>
-      headers.toArray().findIndex((header) => $(header).text().trim() === name)
+      headers.toArray().findIndex((header) => $(header).text().trim() === name),
     );
 
     // Verify all required columns were found
@@ -132,25 +132,25 @@ function parseData(html: string): QuarterlyCashFlowData[] {
         const code = cells.eq(columnIndices[0]).text().trim();
         const name = cells.eq(columnIndices[1]).text().trim();
         const operatingCashFlow = parseNumber(
-          cells.eq(columnIndices[2]).text().trim()
+          cells.eq(columnIndices[2]).text().trim(),
         );
         const investingCashFlow = parseNumber(
-          cells.eq(columnIndices[3]).text().trim()
+          cells.eq(columnIndices[3]).text().trim(),
         );
         const financingCashFlow = parseNumber(
-          cells.eq(columnIndices[4]).text().trim()
+          cells.eq(columnIndices[4]).text().trim(),
         );
         const exchangeRateEffect = parseNumber(
-          cells.eq(columnIndices[5]).text().trim()
+          cells.eq(columnIndices[5]).text().trim(),
         );
         const netCashChange = parseNumber(
-          cells.eq(columnIndices[6]).text().trim()
+          cells.eq(columnIndices[6]).text().trim(),
         );
         const beginningCashBalance = parseNumber(
-          cells.eq(columnIndices[7]).text().trim()
+          cells.eq(columnIndices[7]).text().trim(),
         );
         const endingCashBalance = parseNumber(
-          cells.eq(columnIndices[8]).text().trim()
+          cells.eq(columnIndices[8]).text().trim(),
         );
 
         // Only add valid rows (must have code and name at minimum)
@@ -180,7 +180,7 @@ function parseData(html: string): QuarterlyCashFlowData[] {
  * @returns Array of QuarterlyCashFlowData
  */
 export async function fetchQuarterlyCashFlow(
-  dateStr: string
+  dateStr: string,
 ): Promise<QuarterlyCashFlowData[]> {
   // Parse YYYY-QN format (e.g., "2024-Q1")
   const match = dateStr.match(/^(\d{4})-Q([1-4])$/);
@@ -199,14 +199,14 @@ export async function fetchQuarterlyCashFlow(
   const existingData = await getQuarterlyCashFlowByDate(quarterDate);
   if (existingData.length > 0) {
     log(
-      `[QuarterlyCashFlowService] Check DB: Found ${existingData.length} records.`
+      `[QuarterlyCashFlowService] Check DB: Found ${existingData.length} records.`,
     );
     return existingData;
   }
 
   // 2. Crawl from MOPS
   log(
-    `[QuarterlyCashFlowService] Check DB: No data. Starting crawl job for ${quarterDate}`
+    `[QuarterlyCashFlowService] Check DB: No data. Starting crawl job for ${quarterDate}`,
   );
 
   // Fetch data from both market types concurrently
@@ -216,7 +216,7 @@ export async function fetchQuarterlyCashFlow(
   ]);
 
   log(
-    `[QuarterlyCashFlowService] Crawl Summary: ${siiData.length} SII items, ${otcData.length} OTC items.`
+    `[QuarterlyCashFlowService] Crawl Summary: ${siiData.length} SII items, ${otcData.length} OTC items.`,
   );
 
   const allData = [...siiData, ...otcData];
@@ -225,7 +225,7 @@ export async function fetchQuarterlyCashFlow(
   if (allData.length === 0) {
     log(`[QuarterlyCashFlowService] No data found from sources.`);
     throw new DataNotFoundException(
-      `No quarterly cash flow data found for ${quarterDate}. The data may not be available yet or the quarter is invalid.`
+      `No quarterly cash flow data found for ${quarterDate}. The data may not be available yet or the quarter is invalid.`,
     );
   }
 

@@ -13,7 +13,9 @@
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "target": "es2024",
+    "lib": ["ES2024"]
   },
   "exclude": ["node_modules"]
 }

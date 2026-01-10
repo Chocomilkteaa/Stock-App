@@ -32,7 +32,7 @@ export const dailyPrices = mysqlTable(
     close: decimal("close", { precision: 10, scale: 2 }).notNull(),
     volume: bigint("volume", { mode: "number" }).notNull(),
   },
-  (table) => [uniqueIndex("daily_prices_idx").on(table.stockCode, table.date)]
+  (table) => [uniqueIndex("daily_prices_idx").on(table.stockCode, table.date)],
 );
 
 // 3. Monthly Revenues Table
@@ -68,7 +68,7 @@ export const monthlyRevenues = mysqlTable(
       {
         precision: 10,
         scale: 2,
-      }
+      },
     ).notNull(),
     cumulativeRevenue: decimal("cumulative_revenue", {
       precision: 20,
@@ -83,13 +83,13 @@ export const monthlyRevenues = mysqlTable(
       {
         precision: 10,
         scale: 2,
-      }
+      },
     ).notNull(),
     remarks: varchar("remarks", { length: 255 }),
   },
   (table) => [
     uniqueIndex("monthly_revenues_idx").on(table.stockCode, table.date),
-  ]
+  ],
 );
 
 // 4. Quarterly EPS Table
@@ -109,7 +109,7 @@ export const quarterlyEps = mysqlTable(
     // Basic EPS with precision for decimal values (e.g., 0.78, -1.23)
     eps: decimal("eps", { precision: 10, scale: 4 }).notNull(),
   },
-  (table) => [uniqueIndex("quarterly_eps_idx").on(table.stockCode, table.date)]
+  (table) => [uniqueIndex("quarterly_eps_idx").on(table.stockCode, table.date)],
 );
 
 // 5. Quarterly Capital Table
@@ -131,7 +131,7 @@ export const quarterlyCapital = mysqlTable(
   },
   (table) => [
     uniqueIndex("quarterly_capital_idx").on(table.stockCode, table.date),
-  ]
+  ],
 );
 
 // 6. Quarterly Cash Flow Statement Table (現金流量表)
@@ -186,5 +186,5 @@ export const quarterlyCashFlow = mysqlTable(
   },
   (table) => [
     uniqueIndex("quarterly_cash_flow_idx").on(table.stockCode, table.date),
-  ]
+  ],
 );

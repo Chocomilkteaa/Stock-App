@@ -13,6 +13,7 @@
     "db:migrate": "NODE_OPTIONS='--import tsx' drizzle-kit migrate"
   },
   "dependencies": {
+    "@repo/dto": "workspace:*",
     "@repo/logger": "workspace:*",
     "axios": "^1.13.2",
     "cheerio": "^1.1.2",
@@ -21,13 +22,13 @@
     "express": "^5.2.1",
     "express-async-handler": "^1.2.0",
     "mysql2": "^3.16.0",
-    "zod": "^4.2.1"
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@repo/config": "workspace:*",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.0.3",
+    "@types/node": "^25.0.5",
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.8",
     "tsx": "^4.21.0",

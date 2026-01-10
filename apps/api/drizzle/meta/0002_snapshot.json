@@ -67,10 +67,7 @@
       "indexes": {
         "daily_prices_idx": {
           "name": "daily_prices_idx",
-          "columns": [
-            "stock_code",
-            "date"
-          ],
+          "columns": ["stock_code", "date"],
           "isUnique": true
         }
       },
@@ -79,12 +76,8 @@
           "name": "daily_prices_stock_code_stocks_code_fk",
           "tableFrom": "daily_prices",
           "tableTo": "stocks",
-          "columnsFrom": [
-            "stock_code"
-          ],
-          "columnsTo": [
-            "code"
-          ],
+          "columnsFrom": ["stock_code"],
+          "columnsTo": ["code"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -92,9 +85,7 @@
       "compositePrimaryKeys": {
         "daily_prices_id": {
           "name": "daily_prices_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -191,10 +182,7 @@
       "indexes": {
         "monthly_revenues_idx": {
           "name": "monthly_revenues_idx",
-          "columns": [
-            "stock_code",
-            "date"
-          ],
+          "columns": ["stock_code", "date"],
           "isUnique": true
         }
       },
@@ -203,12 +191,8 @@
           "name": "monthly_revenues_stock_code_stocks_code_fk",
           "tableFrom": "monthly_revenues",
           "tableTo": "stocks",
-          "columnsFrom": [
-            "stock_code"
-          ],
-          "columnsTo": [
-            "code"
-          ],
+          "columnsFrom": ["stock_code"],
+          "columnsTo": ["code"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -216,9 +200,7 @@
       "compositePrimaryKeys": {
         "monthly_revenues_id": {
           "name": "monthly_revenues_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -259,10 +241,7 @@
       "indexes": {
         "quarterly_eps_idx": {
           "name": "quarterly_eps_idx",
-          "columns": [
-            "stock_code",
-            "date"
-          ],
+          "columns": ["stock_code", "date"],
           "isUnique": true
         }
       },
@@ -271,12 +250,8 @@
           "name": "quarterly_eps_stock_code_stocks_code_fk",
           "tableFrom": "quarterly_eps",
           "tableTo": "stocks",
-          "columnsFrom": [
-            "stock_code"
-          ],
-          "columnsTo": [
-            "code"
-          ],
+          "columnsFrom": ["stock_code"],
+          "columnsTo": ["code"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -284,9 +259,7 @@
       "compositePrimaryKeys": {
         "quarterly_eps_id": {
           "name": "quarterly_eps_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -322,17 +295,13 @@
       "compositePrimaryKeys": {
         "stocks_id": {
           "name": "stocks_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "stocks_code_unique": {
           "name": "stocks_code_unique",
-          "columns": [
-            "code"
-          ]
+          "columns": ["code"]
         }
       },
       "checkConstraint": {}
