@@ -22,6 +22,13 @@
       "when": 1768029686806,
       "tag": "0002_right_old_lace",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1768031179001,
+      "tag": "0003_magenta_maddog",
+      "breakpoints": true
     }
   ]
 }

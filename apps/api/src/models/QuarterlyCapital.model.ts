@@ -1,0 +1,119 @@
+import { eq, sql } from "drizzle-orm";
+import { db } from "../database/db.js";
+import { quarterlyCapital, stocks } from "../database/schema.js";
+import { log } from "@repo/logger";
+
+// Interface representing quarterly capital data for a single company
+export interface QuarterlyCapitalData {
+  code: string; // Stock code (公司代號)
+  name: string; // Company name (公司名稱)
+  capital: number; // Paid-in capital in TWD (股本)
+}
+
+/**
+ * Converts YYYY-QN format to SQL-compatible date YYYY-MM-01.
+ * Q1 → 01, Q2 → 04, Q3 → 07, Q4 → 10
+ * @param quarterDate - Date in YYYY-QN format (e.g., "2024-Q1")
+ * @returns SQL date string (e.g., "2024-01-01")
+ */
+function quarterToSqlDate(quarterDate: string): string {
+  const match = quarterDate.match(/^(\d{4})-Q([1-4])$/);
+  if (!match) {
+    throw new Error(`Invalid quarter date format: ${quarterDate}`);
+  }
+  const year = match[1];
+  const quarter = parseInt(match[2], 10);
+  // Map quarter to first month: Q1→01, Q2→04, Q3→07, Q4→10
+  const month = String((quarter - 1) * 3 + 1).padStart(2, "0");
+  return `${year}-${month}-01`;
+}
+
+/**
+ * Retrieves quarterly capital records from the database for a given quarter.
+ * @param date - Quarter date in YYYY-QN format (e.g., "2024-Q1")
+ * @returns Array of QuarterlyCapitalData records
+ */
+export async function getQuarterlyCapitalByDate(
+  date: string
+): Promise<QuarterlyCapitalData[]> {
+  // Convert YYYY-QN format to SQL date format YYYY-MM-01
+  const storageDate = quarterToSqlDate(date);
+
+  try {
+    const records = await db
+      .select({
+        code: stocks.code,
+        name: stocks.name,
+        capital: quarterlyCapital.capital,
+      })
+      .from(quarterlyCapital)
+      .innerJoin(stocks, eq(quarterlyCapital.stockCode, stocks.code))
+      .where(eq(quarterlyCapital.date, storageDate));
+
+    // Map database records to interface format
+    return records.map((record) => ({
+      code: record.code,
+      name: record.name,
+      capital: Number(record.capital),
+    }));
+  } catch (error) {
+    log(
+      `[QuarterlyCapitalModel] Error fetching capital data: ${(error as Error).message}`
+    );
+    return [];
+  }
+}
+
+/**
+ * Saves quarterly capital data to the database with upsert logic.
+ * @param data - Array of QuarterlyCapitalData to save
+ * @param date - Quarter date in YYYY-QN format (e.g., "2024-Q1")
+ */
+export async function saveQuarterlyCapital(
+  data: QuarterlyCapitalData[],
+  date: string
+): Promise<void> {
+  if (data.length === 0) return;
+
+  // Convert YYYY-QN format to SQL date format YYYY-MM-01
+  const storageDate = quarterToSqlDate(date);
+
+  try {
+    // 1. Upsert Stocks - ensure all referenced stocks exist
+    const uniqueStocks = new Map<string, { code: string; name: string }>();
+    data.forEach((item) => {
+      uniqueStocks.set(item.code, { code: item.code, name: item.name });
+    });
+    const stocksValues = Array.from(uniqueStocks.values());
+
+    await db
+      .insert(stocks)
+      .values(stocksValues)
+      .onDuplicateKeyUpdate({ set: { name: sql`VALUES(name)` } });
+
+    // 2. Upsert capital records
+    const capitalValues = data.map((item) => ({
+      stockCode: item.code,
+      date: storageDate,
+      capital: item.capital.toString(),
+    }));
+
+    await db
+      .insert(quarterlyCapital)
+      .values(capitalValues)
+      .onDuplicateKeyUpdate({
+        set: {
+          capital: sql`VALUES(capital)`,
+        },
+      });
+
+    log(
+      `[QuarterlyCapitalModel] Saved ${data.length} capital records for ${date}`
+    );
+  } catch (error) {
+    log(
+      `[QuarterlyCapitalModel] Error saving data: ${(error as Error).message}`
+    );
+    throw error;
+  }
+}

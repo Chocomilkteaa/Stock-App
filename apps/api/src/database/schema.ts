@@ -111,3 +111,25 @@ export const quarterlyEps = mysqlTable(
   },
   (table) => [uniqueIndex("quarterly_eps_idx").on(table.stockCode, table.date)]
 );
+
+// 5. Quarterly Capital Table
+// Stores paid-in capital (股本) data for each company by quarter
+export const quarterlyCapital = mysqlTable(
+  "quarterly_capital",
+  {
+    id: bigint("id", { mode: "number" }).autoincrement().primaryKey(),
+    stockCode: varchar("stock_code", { length: 20 })
+      .notNull()
+      .references(() => stocks.code, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    // Stored as YYYY-MM-01 format (first day of the quarter's first month)
+    date: date("date", { mode: "string" }).notNull(),
+    // Capital in TWD (large numbers, no decimals needed for capital)
+    capital: decimal("capital", { precision: 20, scale: 0 }).notNull(),
+  },
+  (table) => [
+    uniqueIndex("quarterly_capital_idx").on(table.stockCode, table.date),
+  ]
+);
