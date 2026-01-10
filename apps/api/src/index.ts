@@ -5,6 +5,7 @@ import cors from "cors";
 import { db } from "./database/db.js";
 import { getDailyPriceController } from "./controllers/DailyPrice.controller.js";
 import { getMonthlyRevenueController } from "./controllers/MonthlyRevenue.controller.js";
+import { getQuarterlyEpsController } from "./controllers/QuarterlyEPS.controller.js";
 import { log } from "@repo/logger";
 
 const app = express();
@@ -18,7 +19,7 @@ app.get("/health", async (req, res) => {
     await db.execute("SELECT 1");
   } catch (err) {
     log(
-      `[Health] Database Error: ${err instanceof Error ? err.message : String(err)}`,
+      `[Health] Database Error: ${err instanceof Error ? err.message : String(err)}`
     );
     res.status(500).json({ success: false, message: (err as Error).message });
     return;
@@ -29,6 +30,7 @@ app.get("/health", async (req, res) => {
 
 app.get("/crawler/daily-prices/:date", getDailyPriceController);
 app.get("/crawler/monthly-revenues/:date", getMonthlyRevenueController);
+app.get("/crawler/quarterly-eps/:date", getQuarterlyEpsController);
 
 app.listen(port, () => {
   log(`API running at http://localhost:${port}`);

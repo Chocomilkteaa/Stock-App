@@ -32,7 +32,7 @@ export const dailyPrices = mysqlTable(
     close: decimal("close", { precision: 10, scale: 2 }).notNull(),
     volume: bigint("volume", { mode: "number" }).notNull(),
   },
-  (table) => [uniqueIndex("daily_prices_idx").on(table.stockCode, table.date)],
+  (table) => [uniqueIndex("daily_prices_idx").on(table.stockCode, table.date)]
 );
 
 // 3. Monthly Revenues Table
@@ -68,7 +68,7 @@ export const monthlyRevenues = mysqlTable(
       {
         precision: 10,
         scale: 2,
-      },
+      }
     ).notNull(),
     cumulativeRevenue: decimal("cumulative_revenue", {
       precision: 20,
@@ -83,11 +83,31 @@ export const monthlyRevenues = mysqlTable(
       {
         precision: 10,
         scale: 2,
-      },
+      }
     ).notNull(),
     remarks: varchar("remarks", { length: 255 }),
   },
   (table) => [
     uniqueIndex("monthly_revenues_idx").on(table.stockCode, table.date),
-  ],
+  ]
+);
+
+// 4. Quarterly EPS Table
+// Stores earnings per share data for each company by quarter
+export const quarterlyEps = mysqlTable(
+  "quarterly_eps",
+  {
+    id: bigint("id", { mode: "number" }).autoincrement().primaryKey(),
+    stockCode: varchar("stock_code", { length: 20 })
+      .notNull()
+      .references(() => stocks.code, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    // Stored as YYYY-MM-01 format (first day of the quarter's first month)
+    date: date("date", { mode: "string" }).notNull(),
+    // Basic EPS with precision for decimal values (e.g., 0.78, -1.23)
+    eps: decimal("eps", { precision: 10, scale: 4 }).notNull(),
+  },
+  (table) => [uniqueIndex("quarterly_eps_idx").on(table.stockCode, table.date)]
 );
