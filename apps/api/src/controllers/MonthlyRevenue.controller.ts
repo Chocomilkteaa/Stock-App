@@ -1,12 +1,14 @@
-import { Request, Response, RequestHandler } from 'express';
-import expressAsyncHandler from 'express-async-handler';
-import { z } from 'zod';
-import { MonthlyRevenueService } from '../services/MonthlyRevenue.service.js';
+import type { Request, Response, RequestHandler } from "express";
+import expressAsyncHandler from "express-async-handler";
+import { z } from "zod";
+import { fetchMonthlyRevenues } from "../services/MonthlyRevenue.service.js";
 
 // Define the schema for route parameters
 // Format: YYYY-MM
 const MonthlyRevenueParamsSchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}$/, 'Invalid date format. Expected YYYY-MM'),
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, "Invalid date format. Expected YYYY-MM"),
 });
 
 export const getMonthlyRevenueController: RequestHandler = expressAsyncHandler(
@@ -17,7 +19,7 @@ export const getMonthlyRevenueController: RequestHandler = expressAsyncHandler(
     if (!result.success) {
       res.status(400).json({
         success: false,
-        message: 'Validation Error',
+        message: "Validation Error",
         error: result.error,
       });
       return;
@@ -26,11 +28,11 @@ export const getMonthlyRevenueController: RequestHandler = expressAsyncHandler(
     const { date } = result.data;
 
     try {
-      const data = await MonthlyRevenueService.fetchMonthlyRevenues(date);
+      const data = await fetchMonthlyRevenues(date);
 
       res.json({
         success: true,
-        message: 'Data fetched successfully!',
+        message: "Data fetched successfully!",
         count: data.length,
         data: data,
       });

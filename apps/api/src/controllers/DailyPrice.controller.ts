@@ -1,7 +1,7 @@
-import { Request, Response, RequestHandler } from 'express';
-import expressAsyncHandler from 'express-async-handler';
-import { z } from 'zod';
-import { DailyPriceService } from '../services/DailyPrice.service.js';
+import type { Request, Response, RequestHandler } from "express";
+import expressAsyncHandler from "express-async-handler";
+import { z } from "zod";
+import { fetchDailyPrices } from "../services/DailyPrice.service.js";
 
 // Define the schema for route parameters
 const CrawlerParamsSchema = z.object({
@@ -16,7 +16,7 @@ export const getDailyPriceController: RequestHandler = expressAsyncHandler(
     if (!result.success) {
       res.status(400).json({
         success: false,
-        message: 'Validation Error',
+        message: "Validation Error",
         error: result.error,
       });
       return;
@@ -25,11 +25,11 @@ export const getDailyPriceController: RequestHandler = expressAsyncHandler(
     const { date } = result.data;
 
     try {
-      const data = await DailyPriceService.fetchDailyPrices(date);
+      const data = await fetchDailyPrices(date);
 
       res.json({
         success: true,
-        message: 'Data fetched successfully!',
+        message: "Data fetched successfully!",
         count: data.length,
         data: data,
       });
