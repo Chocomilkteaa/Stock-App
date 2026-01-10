@@ -10,9 +10,12 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@repo/dto": "workspace:*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/material": "^7.3.6"
+    "@mui/material": "^7.3.7",
+    "@mui/x-date-pickers": "^8.24.0",
+    "dayjs": "^1.11.19"
   },
   "peerDependencies": {
     "react": "^19.2.3"
