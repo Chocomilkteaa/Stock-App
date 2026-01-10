@@ -1,11 +1,11 @@
 import { eq, sql } from "drizzle-orm";
 import { db } from "../database/db.js";
 import { dailyPrices, stocks } from "../database/schema.js";
-import type { DailyPriceData } from "../services/DailyPrice.service.js";
+import type { DailyPriceData } from "@repo/dto";
 import { log } from "@repo/logger";
 
 export async function getDailyPricesByDate(
-  date: string,
+  date: string
 ): Promise<DailyPriceData[]> {
   try {
     const records = await db
@@ -39,7 +39,7 @@ export async function getDailyPricesByDate(
 
 export async function saveStocksAndPrices(
   data: DailyPriceData[],
-  date: string,
+  date: string
 ): Promise<void> {
   if (data.length === 0) return;
 

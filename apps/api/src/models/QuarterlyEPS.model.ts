@@ -2,13 +2,10 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "../database/db.js";
 import { quarterlyEps, stocks } from "../database/schema.js";
 import { log } from "@repo/logger";
+import { type QuarterlyEpsData } from "@repo/dto";
 
-// Interface representing quarterly EPS data for a single company
-export interface QuarterlyEpsData {
-  code: string;
-  name: string;
-  eps: number;
-}
+// Re-export the type for use by the service layer
+export type { QuarterlyEpsData } from "@repo/dto";
 
 /**
  * Converts YYYY-QN format to SQL-compatible date YYYY-MM-01.

@@ -2,13 +2,10 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "../database/db.js";
 import { quarterlyCapital, stocks } from "../database/schema.js";
 import { log } from "@repo/logger";
+import { type QuarterlyCapitalData } from "@repo/dto";
 
-// Interface representing quarterly capital data for a single company
-export interface QuarterlyCapitalData {
-  code: string; // Stock code (公司代號)
-  name: string; // Company name (公司名稱)
-  capital: number; // Paid-in capital in TWD (股本)
-}
+// Re-export the type for use by the service layer
+export type { QuarterlyCapitalData } from "@repo/dto";
 
 /**
  * Converts YYYY-QN format to SQL-compatible date YYYY-MM-01.

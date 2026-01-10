@@ -15,6 +15,7 @@ The project is built as a **Monorepo** using **Turborepo** for build orchestrati
 │   └── web/              # Frontend Web App (React + Vite + Material UI)
 ├── packages/             # Shared internal libraries
 │   ├── config/           # Shared configuration (TSConfig, ESLint)
+│   ├── dto/              # Shared DTOs, types, and schemas
 │   ├── ui/               # Shared React UI components (Material UI)
 │   └── logger/           # Shared logging utility (Placeholder)
 ├── .github/              # CI/CD Workflows
@@ -55,6 +56,12 @@ These are internal libraries used to share code and configuration.
 - **Purpose**: Shared UI component library.
 - **Description**: Exports Material UI components and themes for consistent design across apps.
 - **Exports**: `RepoButton`, etc.
+
+#### `@repo/dto` (`packages/dto`)
+
+- **Purpose**: Shared data transfer objects, types, and schemas.
+- **Description**: Centralizes TypeScript types and Zod validation schemas for frontend/backend data exchange.
+- **Exports**: `DataType`, `DailyPriceData`, `ApiResponse`, Zod schemas, etc.
 
 #### `@repo/config` (`packages/config`)
 

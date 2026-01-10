@@ -2,23 +2,13 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "../database/db.js";
 import { monthlyRevenues, stocks } from "../database/schema.js";
 import { log } from "@repo/logger";
+import { type MonthlyRevenueData } from "@repo/dto";
 
-export interface MonthlyRevenueData {
-  code: string;
-  name: string;
-  monthlyRevenue: number;
-  lastMonthRevenue: number;
-  lastYearMonthlyRevenue: number;
-  previousMonthChangePercent: number;
-  lastYearSameMonthChangePercent: number;
-  cumulativeRevenue: number;
-  lastYearCumulativeRevenue: number;
-  cumulativePreviousPeriodChangePercent: number;
-  remarks: string | null;
-}
+// Re-export the type for use by the service layer
+export type { MonthlyRevenueData } from "@repo/dto";
 
 export async function getMonthlyRevenuesByDate(
-  date: string,
+  date: string
 ): Promise<MonthlyRevenueData[]> {
   // date input is YYYY-MM. We store as YYYY-MM-01.
   const storageDate = `${date}-01`;
@@ -52,18 +42,18 @@ export async function getMonthlyRevenuesByDate(
       lastYearMonthlyRevenue: Number(record.lastYearMonthlyRevenue),
       previousMonthChangePercent: Number(record.previousMonthChangePercent),
       lastYearSameMonthChangePercent: Number(
-        record.lastYearSameMonthChangePercent,
+        record.lastYearSameMonthChangePercent
       ),
       cumulativeRevenue: Number(record.cumulativeRevenue),
       lastYearCumulativeRevenue: Number(record.lastYearCumulativeRevenue),
       cumulativePreviousPeriodChangePercent: Number(
-        record.cumulativePreviousPeriodChangePercent,
+        record.cumulativePreviousPeriodChangePercent
       ),
       remarks: record.remarks,
     }));
   } catch (error) {
     log(
-      `[MonthlyRevenueModel] Error fetching revenues: ${(error as Error).message}`,
+      `[MonthlyRevenueModel] Error fetching revenues: ${(error as Error).message}`
     );
     return [];
   }
@@ -71,7 +61,7 @@ export async function getMonthlyRevenuesByDate(
 
 export async function saveMonthlyRevenues(
   data: MonthlyRevenueData[],
-  date: string,
+  date: string
 ): Promise<void> {
   if (data.length === 0) return;
 

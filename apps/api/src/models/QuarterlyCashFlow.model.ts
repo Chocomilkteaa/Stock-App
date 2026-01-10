@@ -2,19 +2,10 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "../database/db.js";
 import { quarterlyCashFlow, stocks } from "../database/schema.js";
 import { log } from "@repo/logger";
+import { type QuarterlyCashFlowData } from "@repo/dto";
 
-// Interface representing quarterly cash flow data for a single company (現金流量表)
-export interface QuarterlyCashFlowData {
-  code: string; // Stock code (公司代號)
-  name: string; // Company name (公司名稱)
-  operatingCashFlow: number; // 營業活動之現金流量
-  investingCashFlow: number; // 投資活動之現金流量
-  financingCashFlow: number; // 籌資活動之現金流量
-  exchangeRateEffect: number; // 匯率變動對現金及約當現金之影響
-  netCashChange: number; // 本期現金及約當現金增減數
-  beginningCashBalance: number; // 期初現金及約當現金餘額
-  endingCashBalance: number; // 期末現金及約當現金餘額
-}
+// Re-export the type for use by the service layer
+export type { QuarterlyCashFlowData } from "@repo/dto";
 
 /**
  * Converts YYYY-QN format to SQL-compatible date YYYY-MM-01.
