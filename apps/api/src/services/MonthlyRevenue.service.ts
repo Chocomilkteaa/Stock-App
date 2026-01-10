@@ -6,6 +6,7 @@ import {
   saveMonthlyRevenues,
   type MonthlyRevenueData,
 } from "../models/MonthlyRevenue.model.js";
+import { DataNotFoundException } from "../exceptions/DataNotFoundException.js";
 
 const COLUMNS = [
   "code",
@@ -56,7 +57,7 @@ function parseData(decodedHtml: string): MonthlyRevenueData[] {
           rowObject.cumulativeRevenue = parseNum($(tds[7]).text());
           rowObject.lastYearCumulativeRevenue = parseNum($(tds[8]).text());
           rowObject.cumulativePreviousPeriodChangePercent = parseNum(
-            $(tds[9]).text(),
+            $(tds[9]).text()
           );
           rowObject.remarks = $(tds[10]).text().trim() || null;
 
@@ -72,7 +73,7 @@ function parseData(decodedHtml: string): MonthlyRevenueData[] {
 async function fetchFromSource(
   year: number,
   month: number,
-  type: "sii" | "otc",
+  type: "sii" | "otc"
 ): Promise<MonthlyRevenueData[]> {
   const url = `https://mopsov.twse.com.tw/nas/t21/${type}/t21sc03_${year}_${month}_0.html`;
   log(`[MonthlyRevenueService] Fetching ${type.toUpperCase()}: ${url}`);
@@ -88,28 +89,28 @@ async function fetchFromSource(
     return parseData(decodedHtml);
   } catch (error) {
     log(
-      `[MonthlyRevenueService] Fetch ${type} error: ${(error as Error).message}`,
+      `[MonthlyRevenueService] Fetch ${type} error: ${(error as Error).message}`
     );
     return [];
   }
 }
 
 export async function fetchMonthlyRevenues(
-  dateStr: string,
+  dateStr: string
 ): Promise<MonthlyRevenueData[]> {
   // dateStr format: YYYY-MM
   // 1. Check DB
   const existingData = await getMonthlyRevenuesByDate(dateStr);
   if (existingData.length > 0) {
     log(
-      `[MonthlyRevenueService] Check DB: Found ${existingData.length} records.`,
+      `[MonthlyRevenueService] Check DB: Found ${existingData.length} records.`
     );
     return existingData;
   }
 
   // 2. Crawl
   log(
-    `[MonthlyRevenueService] Check DB: No data. Starting crawl job for ${dateStr}`,
+    `[MonthlyRevenueService] Check DB: No data. Starting crawl job for ${dateStr}`
   );
   const dateObj = new Date(dateStr + "-01"); // Append day to make it valid date
   // Calculate ROC year
@@ -122,14 +123,17 @@ export async function fetchMonthlyRevenues(
   ]);
 
   log(
-    `[MonthlyRevenueService] Crawl Summary: ${siiData.length} SII items, ${otcData.length} OTC items.`,
+    `[MonthlyRevenueService] Crawl Summary: ${siiData.length} SII items, ${otcData.length} OTC items.`
   );
 
   const allData = [...siiData, ...otcData];
 
+  // Throw exception if no data found from any source
   if (allData.length === 0) {
     log(`[MonthlyRevenueService] No data found from sources.`);
-    return [];
+    throw new DataNotFoundException(
+      `No monthly revenue data found for ${dateStr}. The data may not be available yet or the date is invalid.`
+    );
   }
 
   // 3. Save to DB
