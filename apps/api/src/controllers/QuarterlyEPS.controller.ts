@@ -2,6 +2,7 @@ import type { Request, Response, RequestHandler } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { z } from "zod";
 import { fetchQuarterlyEps } from "../services/QuarterlyEPS.service.js";
+import { DataNotFoundException } from "../exceptions/DataNotFoundException.js";
 
 // Schema for validating route parameters
 // Expects date in YYYY-QN format (e.g., 2024-Q1, 2024-Q2, 2024-Q3, 2024-Q4)
@@ -51,6 +52,16 @@ export const getQuarterlyEpsController: RequestHandler = expressAsyncHandler(
         data: data,
       });
     } catch (error) {
+      // Handle DataNotFoundException with 404 status
+      if (error instanceof DataNotFoundException) {
+        res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+        });
+        return;
+      }
+
+      // Handle other unexpected errors with 500 status
       res.status(500).json({
         success: false,
         message: (error as Error).message,

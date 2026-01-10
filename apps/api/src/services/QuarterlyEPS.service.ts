@@ -6,6 +6,7 @@ import {
   saveQuarterlyEps,
   type QuarterlyEpsData,
 } from "../models/QuarterlyEPS.model.js";
+import { DataNotFoundException } from "../exceptions/DataNotFoundException.js";
 
 // Column names to extract from the TWSE MOPS table
 const TARGET_COLUMNS = ["公司代號", "公司名稱", "基本每股盈餘（元）"];
@@ -152,9 +153,12 @@ export async function fetchQuarterlyEps(
 
   const allData = [...siiData, ...otcData];
 
+  // Throw exception if no data found from any source
   if (allData.length === 0) {
     log(`[QuarterlyEpsService] No data found from sources.`);
-    return [];
+    throw new DataNotFoundException(
+      `No quarterly EPS data found for ${quarterDate}. The data may not be available yet or the quarter is invalid.`
+    );
   }
 
   // 3. Save to DB for future requests
