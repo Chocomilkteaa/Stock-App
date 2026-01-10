@@ -44,7 +44,7 @@ interface TpexResponse {
 function parseData(
   inputObject: RawTable,
   columnsToInclude: string[],
-  overrideColumnNames: (keyof DailyPriceData)[]
+  overrideColumnNames: (keyof DailyPriceData)[],
 ): DailyPriceData[] {
   const { fields, data } = inputObject;
 
@@ -121,7 +121,7 @@ async function fetchTwse({
     // Verify HTTP status and API status field
     if (response.status !== 200 || response.data.stat !== "OK") {
       log(
-        `[DailyPriceService] TWSE Fetch Failed. Stat: ${response.data?.stat}, Status: ${response.status}`
+        `[DailyPriceService] TWSE Fetch Failed. Stat: ${response.data?.stat}, Status: ${response.status}`,
       );
       return [];
     }
@@ -155,11 +155,11 @@ async function fetchTwse({
         "收盤價",
         "成交股數",
       ],
-      ["code", "name", "open", "high", "low", "close", "volume"]
+      ["code", "name", "open", "high", "low", "close", "volume"],
     );
   } catch (err) {
     log(
-      `[DailyPriceService] TWSE Error: ${err instanceof Error ? err.message : String(err)}`
+      `[DailyPriceService] TWSE Error: ${err instanceof Error ? err.message : String(err)}`,
     );
     return [];
   }
@@ -182,7 +182,7 @@ async function fetchTpex({
       (response.data.stat !== "ok" && response.data.stat !== "OK")
     ) {
       log(
-        `[DailyPriceService] TPEX Fetch Failed. Stat: ${response.data?.stat}, Status: ${response.status}`
+        `[DailyPriceService] TPEX Fetch Failed. Stat: ${response.data?.stat}, Status: ${response.status}`,
       );
       return [];
     }
@@ -205,21 +205,21 @@ async function fetchTpex({
     const parsed = parseData(
       targetTable,
       ["代號", "名稱", "收盤", "開盤", "最高", "最低", "成交股數"],
-      ["code", "name", "close", "open", "high", "low", "volume"]
+      ["code", "name", "close", "open", "high", "low", "volume"],
     );
 
     // Filter: Keep only main stocks (symbol length < 6 usually excludes warrants/indices)
     return parsed.filter((row) => row.code.length < 6);
   } catch (err) {
     log(
-      `[DailyPriceService] TPEX Error: ${err instanceof Error ? err.message : String(err)}`
+      `[DailyPriceService] TPEX Error: ${err instanceof Error ? err.message : String(err)}`,
     );
     return [];
   }
 }
 
 export async function fetchDailyPrices(
-  dateStr: string
+  dateStr: string,
 ): Promise<DailyPriceData[]> {
   // dateStr format expected: YYYY-MM-DD
   const [year, month, day] = dateStr.split("-");
@@ -233,7 +233,7 @@ export async function fetchDailyPrices(
 
   // 2. Crawl
   log(
-    `[DailyPriceService] Check DB: No data. Starting crawl job for ${year}-${month}-${day}`
+    `[DailyPriceService] Check DB: No data. Starting crawl job for ${year}-${month}-${day}`,
   );
   const dataDate = { year, month, day };
 
@@ -243,7 +243,7 @@ export async function fetchDailyPrices(
   ]);
 
   log(
-    `[DailyPriceService] Crawl Summary: ${twseData.length} TWSE items, ${tpexData.length} TPEX items.`
+    `[DailyPriceService] Crawl Summary: ${twseData.length} TWSE items, ${tpexData.length} TPEX items.`,
   );
   const allData = [...twseData, ...tpexData];
 

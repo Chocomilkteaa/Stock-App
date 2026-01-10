@@ -39,5 +39,5 @@ export const getDailyPriceController: RequestHandler = expressAsyncHandler(
         message: (error as Error).message,
       });
     }
-  }
+  },
 );

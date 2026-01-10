@@ -18,7 +18,7 @@ app.get("/health", async (req, res) => {
     await db.execute("SELECT 1");
   } catch (err) {
     log(
-      `[Health] Database Error: ${err instanceof Error ? err.message : String(err)}`
+      `[Health] Database Error: ${err instanceof Error ? err.message : String(err)}`,
     );
     res.status(500).json({ success: false, message: (err as Error).message });
     return;
