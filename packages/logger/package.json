@@ -11,9 +11,7 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
-    "@repo/config": "workspace:*"
-  },
-  "peerDependencies": {
+    "@repo/config": "workspace:*",
     "typescript": "^5.9.3"
   }
 }

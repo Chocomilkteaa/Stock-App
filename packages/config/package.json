@@ -2,20 +2,24 @@
   "name": "@repo/config",
   "version": "0.0.0",
   "private": true,
-  "files": [
-    "tsconfig.base.json",
-    "eslint.config.mjs"
-  ],
   "exports": {
     "./eslint.config.mjs": "./eslint.config.mjs",
-    "./tsconfig.base.json": "./tsconfig.base.json"
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./prettier.config.mjs": "./prettier.config.mjs"
   },
+  "files": [
+    "tsconfig.base.json",
+    "eslint.config.mjs",
+    "prettier.config.mjs"
+  ],
   "dependencies": {
     "@eslint/js": "^9.0.0",
-    "typescript-eslint": "^8.0.0"
-  },
-  "peerDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.0.1",
+    "prettier": "^3.4.2",
+    "prettier-plugin-packagejson": "^2.5.8",
     "typescript": "^5.9.3",
-    "eslint": "^9.39.2"
+    "typescript-eslint": "^8.51.0"
   }
 }
